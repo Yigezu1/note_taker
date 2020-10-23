@@ -41,18 +41,11 @@ app.post("/api/notes", function (req, res) {
   const newJson = req.body;
   fs.readFile("/db/db.json", "utf8", function (err, data) {
     if (err) throw err;
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].id === newJson.id) {
-        res.send(
-          "Error: There is a record with the same id. Please change and try again."
-        );
-        return;
-      }
-    }
+    newJson.id = data.length + 1;
     data.push(newJson);
     fs.writeFile("/db/db.json", data, function (err) {
       if (err) throw err;
-      res.json(data);
+      res.json(data[data.length]);
     });
   });
 });
