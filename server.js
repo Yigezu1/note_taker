@@ -34,6 +34,7 @@ app.post("/api/notes", function (req, res) {
   const newJson = req.body;
   fs.readFile("/db/db.json", "utf8", function (err, data) {
     if (err) throw err;
+    if(!data) data = [];    
     newJson.id = data.length + 1;
     data.push(newJson);
     fs.writeFile("/db/db.json", data, function (err) {
