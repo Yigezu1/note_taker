@@ -13,13 +13,6 @@ const PORT = 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// mini project (DATA)
-// =============================================================
-const reservations = [];
-const waitlist = [];
-// Routes
-// =============================================================
-
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "index.html"));
@@ -58,12 +51,14 @@ app.delete("api/notes/:id", function (req, resp) {
     for (let i = 0; i < db.length; i++) {
       if (db[i].id === id) {
         db = db.splice(i, 1);
+        return fs.writeFile("/db/db.json", db, function (err) {
+          if (err) throw err;
+          res.end();
+        });
+        
       }
     }
-    fs.writeFile("/db/db.json", db, function (err) {
-      if (err) throw err;
-      res.json(db);
-    });
+    res.end();
   });
 });
 
