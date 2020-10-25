@@ -27,6 +27,15 @@ app.get("/api/notes", function (req, res) {
   res.sendFile(path.join(__dirname, "/db/db.json"));
 });
 
+// serve the js script
+app.get("/assets/js/index.js", function(req, res){
+  res.sendFile(path.join(__dirname, "/assets/js/index.js"));
+});
+
+// serve the js styles
+app.get("/assets/css/styles.css", function(req, res){
+  res.sendFile(path.join(__dirname, "/assets/css/styles.css"));
+});
 // Create New Characters - takes in JSON input
 app.post("/api/notes", function (req, res) {
   // req.body hosts is equal to the JSON post sent from the user
