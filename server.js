@@ -41,27 +41,35 @@ app.post("/api/notes", function (req, res) {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
   const newJson = req.body;
-  fs.readFile("/db/db.json", "utf8", function (err, data) {
+  console.log(newJson);  
+  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function (err, data) {
     if (err) throw err;
-    if(!data) data = [];    
-    newJson.id = data.length + 1;
-    data.push(newJson);
-    fs.writeFile("/db/db.json", data, function (err) {
+    // if(!data) data = [];  
+    console.log(data);
+    
+    const jsonData = JSON.parse(data);
+    newJson.id = jsonData.length + 1;    
+    jsonData.push(newJson);
+    // data.push(newJson);
+    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(jsonData), function (err) {
       if (err) throw err;
-      res.json(data[data.length]);
+      res.json(jsonData);
     });
   });
 });
 
-app.delete("api/notes/:id", function (req, resp) {
-  fs.readFile("/db/db.json", "utf8", function (err, data) {
+app.delete("/api/notes/:id", function (req, res) {
+  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function (err, data) {
     if (err) throw err;
-    const id = req.params.id;
-    const db = data;
+    const id = parseInt(req.params.id);
+    let db = JSON.parse(data);
     for (let i = 0; i < db.length; i++) {
       if (db[i].id === id) {
-        db = db.splice(i, 1);
-        return fs.writeFile("/db/db.json", db, function (err) {
+        db.splice(i, 1);
+        for(let i = 0; i < db.length; i++){
+          db[i].id = i + 1;
+        }
+        return fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(db), function (err) {
           if (err) throw err;
           res.end();
         });
